@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "skipli-database",
+  "private_key_id": "d3c68773e5d62383e7f3627eae66f062162079ee",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCw4WG5FB5h3vI7\nD7IOqLtkCYN1/36dkiZ0gBjHi4+QDiTNrNvtWNbQo6zm1mH8Bk7MzDOWC2JompwS\nT55NMYDFwLWaxKuEYH3dUmcBgrUWJDOgmhls+VgwvG1RSoIzb6pS2VVicefg9I/3\n1G2thYlWBas2iOIfg1XDaF4lOGOxk68v1kpMUrZ+T3Q3pc5FjULBmbZ1CpALnhS6\nbTJdp1sV1fOt2qYr02jz10NylvtRj6sUHlsp4E+u7jL8Ah/2iEX2rpTQ4wZghuJY\nwGRcnTaA1luYzeubQPwszTaRAKnq5Keb4NpPUzSdx7vNmmG3UyqxBKnLexhbHNKb\ndj/zCKbtAgMBAAECggEAAakIFcDu3vRjxzP7/ilkfvtKR3JEOBtMfN4ZWFNGmE0L\nmybx8V95gTL4G5aWXegAIZfpQaYORIl+Bmw3N7zqYFIY9DZt5jNwObrsj2VZh6Ks\n4EN8RbERoqZbGCu5tgX38enwQHpZJ3L3bTlrrLEXrBTqlIsQn4B2Nk4GxIWhqPgd\ntS4JXz1qf1z21FQbCTv312TVAMOhslZ85AT0wJSyVj45moIT+r7SMVlFGNPnolzP\n5yfQZN8pxUtswQfNFauZZTk5C+P4QiHuKdJZEUvYIpvDy6Jn8YVVUKhW3UGKoeLz\nM1ANqScEoId21Os8O3MDa7R5jELuYjHC77EYqAquIQKBgQDjm8BpYxYwHxEwLMAa\nZIAjFUjf7OtX1uxs7XlcM9P49ccv8ZZ9Kyk2GbTyRPDDWABDsomQBtT8Ct1dMRoh\nHDh+fId2ttbpWdX5/D3QSdkj1eSRYijN3HevdsRz/R/EXxcdks/bWb2QjL/NzkRJ\nJ6z5Z7ZnO0a54cfeNhMjad/lOQKBgQDG8bnlTp2yivJhInY9FZ4prTNkdS5TVcJw\ngfWHljznWisX7QFbNswy8qkyqKE3NuG1Q9YAIrZlvpF0rEvOswI25YMsr70dofys\niehU/+SFCaK8bkrNxk/NOPugI4xhjDWw2DiXYpEfJyYgE2q5YIFTXI8KiuDR/tKt\nk//OTvDjVQKBgQDjhYZJ0usTH3snFRTTTTNp3pUCguqe3BFqsdhm+sgiTk3W90Df\nzo1br0baB2BFZWqeQZKRjsLJUHMH/VWJU5SFnCYt3YfnrA3h3uxLkgalc+MQEXeI\nkaJym961s4pV2lhZD7EILCT6ojf5mv9XwXl/ttT3TKHennwU/SkUdXmCwQKBgQDB\nm49A5JA9qFEXTLVq3vXsMz13fz6VJTmzyhXLXN9qeurDPwh530s8LcGRpmA2Xrer\ncxf5S87cF2hw9hhUUQtPp25P97sA8pr2wsMSrXGUMvtni6JKvbr9yn2+q7m7WPsL\nXnE8ilUWzz+gKaVMQOm62bHvHZaLZwVanVRuT47IfQKBgQDgKGS0zwIzAtxqQLda\nHs6gVv1Tdkp2ZwfSqTEIK9ITq0oz9JmBJEzSJnkhlxiWzosH9huHmMrf0toxsqEC\nokFGQnZj8tUcBgTpRtbpm2yn6ZqBHyzM6055mEaan2JcOJFkDwKJ4UDpn+lqxIrS\nupxISyDDgAh+h5okwaylE0X/aQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-few4i@skipli-database.iam.gserviceaccount.com",
+  "client_id": "109562766894000586468",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-few4i%40skipli-database.iam.gserviceaccount.com"
+}
