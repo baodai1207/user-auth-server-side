@@ -65,22 +65,23 @@ router.get('/users/:id', (req, res, next) => {
 //POST requests
 //Create User, CREATE NEW ACCESS CODE
 router.post('/users', (req, res, next) => {
-  console.log(req.phoneNumber);
-
+  console.log(req.body.phoneNumber);
+  // console.log(req.body.accessCode);
   let docId = Math.floor(Math.random() * (99999 - 00000));
-  //Check if the json object doesn't have accessCode
-  if (
-    (req.body.phoneNumber != null && req.body.accessCode == null) ||
-    (req.body.phoneNumber != undefined && req.body.accessCode == undefined)
-  ) {
+
+  //Check if the user doesn't have accessCode, generate accessCode
+  if (req.body.phoneNumber != null || req.body.phoneNumber != undefined) {
     //Generate 6 random digits accessCode
     let accessCode = Math.floor(Math.random() * (999999 - 000000));
+    console.log(accessCode);
     let newUser = {
       phoneNumber: req.body.phoneNumber,
-      accessCode: accessCode,
+      accessCode: (req.body.accessCode = accessCode), //Put in firebase database
     };
     //send the user to firestore with new accessCode
-    let setNewUser = usersCollection.doc(String(docId).set(newUser));
+    let setNewUser = usersCollection.doc(String(docId)).set(newUser);
+    console.log(setNewUser);
+
     res.json({
       message: 'user was successfully created',
     });
@@ -93,31 +94,61 @@ router.post('/users', (req, res, next) => {
 
 //POST REQUEST
 //VALIDATE ACCESS CODE
-router.post('/users', (req, res, next) => {
+router.post('/users/:id', (req, res, next) => {
+  let reqId = req.params.id;
+  let accessCode1 = req.body.accessCode;
+  let phoneNumber1 = req.body.phoneNumber;
+
   //Check if the json object is not null or empty
   if (
-    (req.body.phoneNumber != null && req.body.accessCode != null) ||
-    (req.body.phoneNumber != undefined && req.body.accessCode != undefined) // Dont need email check, create a empty string to generate 6 random digits
+    (phoneNumber1 != null && accessCode1 != null) ||
+    (phoneNumber1 != undefined && accessCode1 != undefined)
   ) {
     //listen to the collection of users
-    db.collection('users')
-      //"where" clause we have control over what data comes back
-      .where('accessCode', '==', req.body.accessCode)
-      .onSnapshot(function (snap) {
-        snap.forEach(function (doc) {
-          console.log(doc.data());
-        });
-        //compare if accessCode from user is the same with accessCode generated
-        if (doc.data() == req.body.accessCode) {
+    //"where" clause we have control over what data comes back
+    usersCollection
+      .doc(reqId)
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          console.log(doc.data().accessCode);
+          if (doc.data().accessCode == accessCode1) {
+            res.json({
+              message: 'accessCode matched - Login the user',
+            });
+          } else {
+            res.json({
+              message: "Access Code doesn't match!!!",
+            });
+          }
+        } else {
+          res.json({
+            statusCode: '404',
+            statusResponse: 'Not found',
+            message: 'User not found',
+          });
         }
-      });
 
-    let newUser = {
-      phoneNumber: req.body.phoneNumber,
-      accessCode: req.body.accessCode,
-    };
-    //send the user to firestore
-    let setNewUser = usersCollection.doc(String(docId)).set(newUser);
+        //compare if accessCode from user is the same with accessCode generated
+        // if (doc.data() == accessCode) {
+        //   res.json({
+        //     message: 'accessCode matched - Login the user',
+        //   });
+        // } else {
+        //   res.json({
+        //     message: 'Wrong accessCode !!!',
+        //   });
+        // }
+        //   });
+        // });
+
+        // let newUser = {
+        //   phoneNumber: req.body.phoneNumber,
+        //   accessCode: req.body.accessCode,
+        // };
+        // //send the user to firestore
+        // let setNewUser = usersCollection.doc(String(docId)).set(newUser);
+      });
   }
 }),
   //PUT requests
@@ -126,25 +157,24 @@ router.post('/users', (req, res, next) => {
     let userId = req.params.id;
 
     let transaction = db
-      .runTransaction(transaction => {
-        return transaction.get(usersCollection).then(doc => {
-          if (
-            req.body.phoneNumber != undefined &&
-            req.body.accessCode != undefined //Generate 6 digits random for accessCode
-          ) {
-            //pass the data as an object here
-            transaction.update(usersCollection.doc(userId), {
-              phoneNumber: req.body.phoneNumber,
-              accessCode: req.body.accessCode,
-            });
-          } else {
-            res.json({
-              statusCode: '505',
-              statusResponse: 'Error parsing the data',
-              message: 'There is no data to parse',
-            });
-          }
-        });
+      .runTransaction(async transaction => {
+        const doc = await transaction.get(usersCollection);
+        if (
+          req.body.phoneNumber != undefined &&
+          req.body.accessCode != undefined //Generate 6 digits random for accessCode
+        ) {
+          //pass the data as an object here
+          transaction.update(usersCollection.doc(userId), {
+            phoneNumber: req.body.phoneNumber,
+            accessCode: req.body.accessCode,
+          });
+        } else {
+          res.json({
+            statusCode: '505',
+            statusResponse: 'Error parsing the data',
+            message: 'There is no data to parse',
+          });
+        }
       })
       .then(result => {
         res.json({
