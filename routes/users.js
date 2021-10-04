@@ -64,7 +64,7 @@ router.get('/users/:id', (req, res, next) => {
 
 //POST requests
 //Create User, CREATE NEW ACCESS CODE
-router.post('/users', (req, res, next) => {
+router.post('/create', (req, res, next) => {
   console.log(req.body.phoneNumber);
   // console.log(req.body.accessCode);
   let docId = Math.floor(Math.random() * (99999 - 00000));
@@ -96,13 +96,13 @@ router.post('/users', (req, res, next) => {
 //VALIDATE ACCESS CODE
 router.post('/users/:id', (req, res, next) => {
   let reqId = req.params.id;
-  let accessCode1 = req.body.accessCode;
-  let phoneNumber1 = req.body.phoneNumber;
+  let accessCode = req.body.accessCode;
+  let phoneNumber = req.body.phoneNumber;
 
   //Check if the json object is not null or empty
   if (
-    (phoneNumber1 != null && accessCode1 != null) ||
-    (phoneNumber1 != undefined && accessCode1 != undefined)
+    (phoneNumber != null && accessCode != null) ||
+    (phoneNumber != undefined && accessCode != undefined)
   ) {
     //listen to the collection of users
     usersCollection
@@ -111,7 +111,7 @@ router.post('/users/:id', (req, res, next) => {
       .then(doc => {
         if (doc.exists) {
           console.log(doc.data().accessCode);
-          if (doc.data().accessCode == accessCode1) {
+          if (doc.data().accessCode == accessCode) {
             res.json({
               message: 'accessCode matched - Login the user',
             });
@@ -127,26 +127,6 @@ router.post('/users/:id', (req, res, next) => {
             message: 'User not found',
           });
         }
-
-        //compare if accessCode from user is the same with accessCode generated
-        // if (doc.data() == accessCode) {
-        //   res.json({
-        //     message: 'accessCode matched - Login the user',
-        //   });
-        // } else {
-        //   res.json({
-        //     message: 'Wrong accessCode !!!',
-        //   });
-        // }
-        //   });
-        // });
-
-        // let newUser = {
-        //   phoneNumber: req.body.phoneNumber,
-        //   accessCode: req.body.accessCode,
-        // };
-        // //send the user to firestore
-        // let setNewUser = usersCollection.doc(String(docId)).set(newUser);
       });
   }
 }),
