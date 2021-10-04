@@ -105,7 +105,6 @@ router.post('/users/:id', (req, res, next) => {
     (phoneNumber1 != undefined && accessCode1 != undefined)
   ) {
     //listen to the collection of users
-    //"where" clause we have control over what data comes back
     usersCollection
       .doc(reqId)
       .get()
