@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
-
+const sendSms = require('./twilio');
+const bodyParser = require('body-parser');
 const admin = require('firebase-admin');
+
+const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
 
 const serviceAcc = require('../keyfile.json');
 
@@ -65,46 +69,61 @@ router.get('/users/:id', (req, res, next) => {
 //POST requests
 //Create User, CREATE NEW ACCESS CODE
 router.post('/create', (req, res, next) => {
-  console.log(req.body.phoneNumber);
-  let phoneNumber = req.body.phoneNumber;
+  let phoneNumber = `+1${req.body.phoneNumber}`;
+  console.log(phoneNumber);
+
   // console.log(req.body.accessCode);
   //Check if the phoneNumber is in database
-  validPhoneNumber = usersCollection.where('phoneNumber', '==', phoneNumber);
-  validPhoneNumber.get().then(querySnapshot => {
-    querySnapshot.forEach(doc => {
-      console.log(doc.id, ' => ', doc.data());
+  // validPhoneNumber = usersCollection.where('phoneNumber', '==', phoneNumber);
+  // validPhoneNumber.get().then(querySnapshot => {
+  //   querySnapshot.forEach(doc => {
+  //     console.log(doc.id, ' => ', doc.data());
+  //     console.log(phoneNumber);
+  //     //Check if the phoneNumber is in database
+  //     if (doc.data().phoneNumber == req.body.phoneNumber) {
+  //       console.log(doc.data());
+  //       doc
+  //         .delete()
+  //         .then(() => {
+  //           console.log('deleted successfully');
+  //         })
+  //         .catch(error => {
+  //           console.log('Error removing document: ', error);
+  //         });
+  //       // res.json({
+  //       //   message: 'phoneNumber is exist',
+  //       // });
+  //       // doc.delete();
+  //       // res.json({
+  //       //   message: 'delete user',
+  //       // });
+  //     }
+  //   });
+  if (phoneNumber.length < 12 && phoneNumber.length > 15) {
+    let docId = Math.floor(Math.random() * (99999 - 00000));
 
-      //Check if the phoneNumber is in database
-      if (doc.data().phoneNumber !== phoneNumber) {
-        if (phoneNumber.length > 0) {
-          let docId = Math.floor(Math.random() * (99999 - 00000));
+    //Generate 6 random digits accessCode
+    let accessCode2 = Math.floor(Math.random() * (999999 - 000000));
+    const welcomeMessage = `Welcome to Skipli! Your access code is ${accessCode2}`;
+    console.log(accessCode2);
+    let newUser = {
+      phoneNumber: phoneNumber,
+      accessCode: accessCode2, //Put in firebase database
+    };
+    //send the user to firestore with new accessCode
+    let setNewUser = usersCollection.doc(String(docId)).set(newUser);
+    console.log(setNewUser);
 
-          //Generate 6 random digits accessCode
-          let accessCode = Math.floor(Math.random() * (999999 - 000000));
-          console.log(accessCode);
-          let newUser = {
-            phoneNumber: phoneNumber,
-            accessCode: (req.body.accessCode = accessCode), //Put in firebase database
-          };
-          //send the user to firestore with new accessCode
-          let setNewUser = usersCollection.doc(String(docId)).set(newUser);
-          console.log(setNewUser);
+    sendSms(newUser.phoneNumber, welcomeMessage);
 
-          res.json({
-            message: 'user was successfully created',
-          });
-        } else {
-          res.json({
-            message: 'req.body params are undefined',
-          });
-        }
-      } else {
-        res.json({
-          message: 'phoneNumber is exist',
-        });
-      }
+    res.json({
+      message: 'user was successfully created and sent code!',
     });
-  });
+  } else {
+    res.json({
+      message: 'Wrong phone number input',
+    });
+  }
 });
 
 //POST REQUEST
@@ -136,7 +155,7 @@ router.post('/users/', (req, res, next) => {
 }),
   //PUT requests
   //Update users phoneNumber
-  router.put('/user/:id', (req, res, next) => {
+  router.put('/users/', (req, res, next) => {
     let userId = req.params.id;
 
     let transaction = db
