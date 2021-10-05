@@ -66,30 +66,45 @@ router.get('/users/:id', (req, res, next) => {
 //Create User, CREATE NEW ACCESS CODE
 router.post('/create', (req, res, next) => {
   console.log(req.body.phoneNumber);
+  let phoneNumber = req.body.phoneNumber;
   // console.log(req.body.accessCode);
-  let docId = Math.floor(Math.random() * (99999 - 00000));
+  //Check if the phoneNumber is in database
+  validPhoneNumber = usersCollection.where('phoneNumber', '==', phoneNumber);
+  validPhoneNumber.get().then(querySnapshot => {
+    querySnapshot.forEach(doc => {
+      console.log(doc.id, ' => ', doc.data());
 
-  //Check if the user doesn't have accessCode, generate accessCode
-  if (req.body.phoneNumber != null || req.body.phoneNumber != undefined) {
-    //Generate 6 random digits accessCode
-    let accessCode = Math.floor(Math.random() * (999999 - 000000));
-    console.log(accessCode);
-    let newUser = {
-      phoneNumber: req.body.phoneNumber,
-      accessCode: (req.body.accessCode = accessCode), //Put in firebase database
-    };
-    //send the user to firestore with new accessCode
-    let setNewUser = usersCollection.doc(String(docId)).set(newUser);
-    console.log(setNewUser);
+      //Check if the phoneNumber is in database
+      if (doc.data().phoneNumber !== phoneNumber) {
+        if (phoneNumber.length > 0) {
+          let docId = Math.floor(Math.random() * (99999 - 00000));
 
-    res.json({
-      message: 'user was successfully created',
+          //Generate 6 random digits accessCode
+          let accessCode = Math.floor(Math.random() * (999999 - 000000));
+          console.log(accessCode);
+          let newUser = {
+            phoneNumber: phoneNumber,
+            accessCode: (req.body.accessCode = accessCode), //Put in firebase database
+          };
+          //send the user to firestore with new accessCode
+          let setNewUser = usersCollection.doc(String(docId)).set(newUser);
+          console.log(setNewUser);
+
+          res.json({
+            message: 'user was successfully created',
+          });
+        } else {
+          res.json({
+            message: 'req.body params are undefined',
+          });
+        }
+      } else {
+        res.json({
+          message: 'phoneNumber is exist',
+        });
+      }
     });
-  } else {
-    res.json({
-      message: 'req.body params are undefined',
-    });
-  }
+  });
 });
 
 //POST REQUEST
@@ -100,20 +115,9 @@ router.post('/users/', (req, res, next) => {
   let phoneNumber = req.body.phoneNumber;
   // console.log(phoneNumber);
   //Check if the json object is not null or empty
-  if (
-    (phoneNumber != null && accessCode != null) ||
-    (phoneNumber != undefined && accessCode != undefined)
-  ) {
-    // console.log(accessCode);
-    // validPhoneNumber = usersCollection
-    //   .where('phoneNumber', '==', phoneNumber)
-    //   .get();
-    // console.log(validPhoneNumber);
-    //listen to the collection of users
+  if (req.body.accessCode.length > 0) {
     validation = usersCollection.where('phoneNumber', '==', phoneNumber);
-    // .where('accessCode', '==', accessCode);
-    // .where('accessCode', '==', true)
-    // .doc(reqId)
+
     validation.get().then(querySnapshot => {
       querySnapshot.forEach(doc => {
         console.log(doc.id, ' => ', doc.data());
@@ -138,10 +142,7 @@ router.post('/users/', (req, res, next) => {
     let transaction = db
       .runTransaction(async transaction => {
         const doc = await transaction.get(usersCollection);
-        if (
-          req.body.phoneNumber != undefined &&
-          req.body.accessCode != undefined //Generate 6 digits random for accessCode
-        ) {
+        if (req.body.phoneNumber.length > 0) {
           //pass the data as an object here
           transaction.update(usersCollection.doc(userId), {
             phoneNumber: req.body.phoneNumber,
