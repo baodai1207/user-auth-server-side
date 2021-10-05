@@ -94,40 +94,40 @@ router.post('/create', (req, res, next) => {
 
 //POST REQUEST
 //VALIDATE ACCESS CODE
-router.post('/users/:id', (req, res, next) => {
-  let reqId = req.params.id;
+router.post('/users/', (req, res, next) => {
+  // let reqId = req.params.id;
   let accessCode = req.body.accessCode;
   let phoneNumber = req.body.phoneNumber;
-
+  // console.log(phoneNumber);
   //Check if the json object is not null or empty
   if (
     (phoneNumber != null && accessCode != null) ||
     (phoneNumber != undefined && accessCode != undefined)
   ) {
+    // console.log(accessCode);
+    // validPhoneNumber = usersCollection
+    //   .where('phoneNumber', '==', phoneNumber)
+    //   .get();
+    // console.log(validPhoneNumber);
     //listen to the collection of users
-    usersCollection
-      .doc(reqId)
-      .get()
-      .then(doc => {
-        if (doc.exists) {
-          console.log(doc.data().accessCode);
-          if (doc.data().accessCode == accessCode) {
-            res.json({
-              message: 'accessCode matched - Login the user',
-            });
-          } else {
-            res.json({
-              message: "Access Code doesn't match!!!",
-            });
-          }
+    validation = usersCollection.where('phoneNumber', '==', phoneNumber);
+    // .where('accessCode', '==', accessCode);
+    // .where('accessCode', '==', true)
+    // .doc(reqId)
+    validation.get().then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        console.log(doc.id, ' => ', doc.data());
+        if (doc.data().accessCode == accessCode) {
+          res.json({
+            message: 'access code matched - Login the user',
+          });
         } else {
           res.json({
-            statusCode: '404',
-            statusResponse: 'Not found',
-            message: 'User not found',
+            message: 'access code DOES NOT match',
           });
         }
       });
+    });
   }
 }),
   //PUT requests
