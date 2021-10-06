@@ -7,7 +7,20 @@ Please Download server side and client side at:
 
 
 ## Server side
-In the project directory, you can run:
+#### Components:
+1. index.js: Deployed express server API
+2. keyfile.json: Content firebase json key
+3. twilio.js: Generated message from twilio API
+4. users.js: route and router setup
+
+
+In the project directory:
+
+You will need to create .env file that include TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN to send the access code to user.
+
+There is a file called .env_base which you can setup your own .env file
+
+Then you can run:
 
 ### `npm start`
 
