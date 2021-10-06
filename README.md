@@ -13,4 +13,4 @@ In the project directory, you can run:
 
 Open http://localhost:3000
 
-!(/images/Capture.PNG)
+![](/images/Capture.PNG)
