@@ -12,6 +12,7 @@ Please Download server side and client side at:
 2. keyfile.json: Content firebase json key
 3. twilio.js: Generated message from twilio API
 4. users.js: route and router setup
+5. env_base: basic format to setup your own twilio API key
 
 
 In the project directory:
