@@ -99,7 +99,7 @@ router.post('/create', (req, res, next) => {
   //       // });
   //     }
   //   });
-  if (phoneNumber.length < 12 && phoneNumber.length > 15) {
+  if (phoneNumber.length > 10) {
     let docId = Math.floor(Math.random() * (99999 - 00000));
 
     //Generate 6 random digits accessCode
@@ -117,7 +117,8 @@ router.post('/create', (req, res, next) => {
     sendSms(newUser.phoneNumber, welcomeMessage);
 
     res.json({
-      message: 'user was successfully created and sent code!',
+      message:
+        'User was successfully created and sent code to provided phone number!',
     });
   } else {
     res.json({
@@ -128,16 +129,19 @@ router.post('/create', (req, res, next) => {
 
 //POST REQUEST
 //VALIDATE ACCESS CODE
-router.post('/users/', (req, res, next) => {
+router.post('/users', (req, res, next) => {
   // let reqId = req.params.id;
   let accessCode = req.body.accessCode;
-  let phoneNumber = req.body.phoneNumber;
+  let phoneNumber = '+1' + req.body.phoneNumber;
   // console.log(phoneNumber);
   //Check if the json object is not null or empty
   if (req.body.accessCode.length > 0) {
-    validation = usersCollection.where('phoneNumber', '==', phoneNumber);
+    console.log(phoneNumber);
+
+    var validation = usersCollection.where('phoneNumber', '==', phoneNumber);
 
     validation.get().then(querySnapshot => {
+      console.log(querySnapshot);
       querySnapshot.forEach(doc => {
         console.log(doc.id, ' => ', doc.data());
         if (doc.data().accessCode == accessCode) {
@@ -146,7 +150,7 @@ router.post('/users/', (req, res, next) => {
           });
         } else {
           res.json({
-            message: 'access code DOES NOT match',
+            message: 'access code DOES NOT match. Please try again!',
           });
         }
       });
